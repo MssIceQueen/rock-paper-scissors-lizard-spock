@@ -1,85 +1,111 @@
-const message = document.querySelector('.message');
-const score = document.querySelector('.score');
-const buttons = document.querySelectorAll('button');
-const winnerScores = [0,0];
+let message = document.getElementById('message');
+let score = document.getElementById('score');
+let buttons = document.getElementsByClassName('selections');
+let resetBtn = document.getElementById('reset');
+let winnerScores = [0, 0];
 
 //add event listeners to buttons
-for ( let i = 0 ; i < buttons.length ; i++){
+for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener('click', playGame);
 }
+resetBtn.addEventListener('click',restart);
 
-function playGame(e){
-    //setup player's selection
-    let playerSelection = e.target.innerText;
-    //setup a random number to select for computer
-    //selects a number between 0 and 1 (1 not-inclusive)
+function playGame(choice) {
+    // setup player's selection
+    let playerSelection = choice.target.innerText;
+    // setup a random number to select for computer
+    // selects a number between 0 and 1 (1 not-inclusive)
     let computerSelection = Math.random();
 
-    //if computerSelection is less than .34, computer selects Rock
-    if (computerSelection < .34){
+    // if computerSelection is less than .2, computer selects rock
+    if (computerSelection < .2) {
         computerSelection = 'Rock';
-    } else if (computerSelection <= .67){
+    }
+    // if computerSelection is less than .4 or equal to .4, computer selects paper
+    else if (computerSelection <= .4) {
         computerSelection = 'Paper';
-    } else {
+    }
+    // if computerSelection is less than .6 or equal to .6, computer selects scissors
+    else if (computerSelection <= .6) {
         computerSelection = 'Scissors';
+    }
+    // if computerSelection is less than .8 or equal to .8, computer selects scissors
+    else if (computerSelection <= .8) {
+        computerSelection = 'Lizard';
+    }
+    // if none of the above is applicable, computer selects spock
+    else {
+        computerSelection = 'Spock';
     }
 
     //setup a function to compare winners and return result
     let result = checkWinner(playerSelection, computerSelection);
 
-    //output scores to the DOM
-    if (result === 'Player'){
-        result += ' wins!';
-        //update score
-        winnerScores[0]++;
+    function checkWinner(player, computer) {
+        if (player === computer) {
+            return 'draw';
+        } else if (player === 'Rock') {
+            if (computer === 'Scissor' || computer === 'Lizard') {
+                return 'player';
+            } else {
+                return 'computer';
+            }
+        } else if (player === 'Paper') {
+            if (computer === 'Rock' || computer === 'Spock') {
+                return 'player';
+            } else {
+                return 'computer';
+            }
+        } else if (player === 'Scissors') {
+            if (computer === 'Paper' || computer === 'Lizard') {
+                return 'player';
+            } else {
+                return 'computer';
+            }
+        } else if (player === 'Spock') {
+            if (computer === 'Scissors' || computer === 'Rock') {
+                return 'player';
+            } else {
+                return 'computer'
+            }
+        } else if (player === 'Lizard') {
+            if (computer === 'Paper' || computer === 'Spock') {
+                return 'player';
+            } else {
+                return 'computer'
+            }
+        }
+
     }
 
-    if (result === 'Computer'){
-        result += ' wins!';
-        winnerScores[1]++;
-    }
-
-    if (result === 'Draw'){
-        result += '. It\'s a tie!'
-    }
-
-    //output score into Score DIV
-    score.innerHTML = 'Player: [ ' + winnerScores[0]+ ' ] Computer: [ ' + winnerScores[1] + ' ]';
-
-    //output player and computer's selections
-    messenger('Player: <strong>' + playerSelection + '</strong> Computer: <strong>' + computerSelection + '</strong><br>' + result);
+//output scores to the DOM
+if (result === 'player') {
+    result += ' wins!';
+    //update score
+    winnerScores[0]++;
 }
 
-function messenger(selectionMessage){
+if (result === 'computer') {
+    result += ' wins!';
+    winnerScores[1]++;
+}
+
+if (result === 'draw') {
+    result += ". It's a tie!"
+}
+
+//output score into Score DIV
+score.innerHTML = 'Player: [ ' + winnerScores[0] + ' ] Computer: [ ' + winnerScores[1] + ' ]';
+
+//output player and computer's selections
+messenger('Player: <strong>' + playerSelection + '</strong> Computer: <strong>' + computerSelection + '</strong><br>' + result);
+}
+
+function restart(){
+    winnerScores = [0,0];
+}
+
+function messenger(selectionMessage) {
     message.innerHTML = selectionMessage;
 }
 
-function checkWinner(player, computer){
-    if (player === computer){
-        return 'Draw';
-    }
-
-    if (player === 'Rock'){
-        if(computer === 'Paper'){
-            return 'Computer';
-        } else {
-            return 'Player';
-        }
-    }
-
-    if (player === 'Paper'){
-        if (computer === 'Scissors'){
-            return 'Computer';
-        } else {
-            return 'Player';
-        }
-    }
-
-    if (player === 'Scissors'){
-        if (computer === 'Rock'){
-            return 'Computer';
-        } else {
-            return 'Player';
-        }
-    }
-}
